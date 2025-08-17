@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WinGo Demo Game</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+text-align: center;
+background: linear-gradient(to bottom, #006633, #00994d);
+color: white;
+margin: 0;
+padding: 20px;
+}
+.wallet {
+background: white;
+color: black;
+padding: 15px;
+border-radius: 8px;
+width: 280px;
+margin: auto;
+}
+.btn {
+padding: 10px 20px;
+margin: 10px;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+font-weight: bold;
+}
+.green { background: green; color: white; }
+.red { background: red; color: white; }
+.violet { background: purple; color: white; }
+.number {
+display: inline-block;
+margin: 5px;
+padding: 15px;
+background: white;
+color: black;
+border-radius: 50%;
+font-weight: bold;
+cursor: pointer;
+}
+.timer {
+font-size: 22px;
+margin-top: 20px;
+}
+.result {
+font-size: 24px;
+margin-top: 20px;
+font-weight: bold;
+}
+</style>
+</head>
+<body>
+<h1>🎲 WinGo Demo Game</h1>
+
+<div class="wallet">
+Wallet Balance: <span id="balance">1000</span> Coins
+<br>
+<button class="btn" onclick="deposit()">Deposit</button>
+<button class="btn" onclick="withdraw()">Withdraw</button>
+</div>
+
+<div class="timer">⏳ Time Left: <span id="time">60</span> sec</div>
+
+<h2>Choose Your Bet</h2>
+<button class="btn green" onclick="bet('Green')">Green (2x)</button>
+<button class="btn red" onclick="bet('Red')">Red (2x)</button>
+<button class="btn violet" onclick="bet('Violet')">Violet (4.5x)</button>
+
+<h3>Or Select a Number (9x)</h3>
+<div>
+<span class="number" onclick="bet(0)">0</span>
+<span class="number" onclick="bet(1)">1</span>
+<span class="number" onclick="bet(2)">2</span>
+<span class="number" onclick="bet(3)">3</span>
+<span class="number" onclick="bet(4)">4</span>
+<span class="number" onclick="bet(5)">5</span>
+<span class="number" onclick="bet(6)">6</span>
+<span class="number" onclick="bet(7)">7</span>
+<span class="number" onclick="bet(8)">8</span>
+<span class="number" onclick="bet(9)">9</span>
+</div>
+
+<div class="result" id="result">Waiting for round...</div>
+
+<script>
+let balance = 1000;
+let betChoice = null;
+let betAmount = 100;
+let timeLeft = 60;
+
+function updateBalance() {
+document.getElementById("balance").innerText = balance;
+}
+
+function deposit() {
+balance += 500;
+updateBalance();
+alert("Demo Deposit: 500 Coins Added");
+}
+
+function withdraw() {
+alert("Demo Withdraw! (No real money)");
+}
+
+function bet(choice) {
+if (betChoice) {
+alert("Already placed a bet!");
+return;
+}
+if (balance < betAmount) {
+alert("Not enough balance!");
+return;
+}
+balance -= betAmount;
+updateBalance();
+betChoice = choice;
+document.getElementById("result").innerText = "You bet on: " + choice;
+}
+
+function roundResult() {
+let colors = ["Green","Red","Violet"];
+let number = Math.floor(Math.random() * 10);
+let outcomeColor = colors[Math.floor(Math.random() * colors.length)];
+let resultText = `Result: ${number} (${outcomeColor})`;
+
+if (betChoice !== null) {
+if (betChoice === outcomeColor) {
+let win = betAmount * (betChoice === "Violet" ? 4.5 : 2);
+balance += win;
+resultText += ` 🎉 You Win ${win} coins!`;
+} else if (betChoice === number) {
+let win = betAmount * 9;
+balance += win;
+resultText += ` 🎉 You Win ${win} coins!`;
+} else {
+resultText += ` ❌ You Lost!`;
+}
+betChoice = null;
+}
+
+updateBalance();
+document.getElementById("result").innerText = resultText;
+timeLeft = 60;
+}
+
+setInterval(() => {
+if (timeLeft > 0) {
+timeLeft--;
+document.getElementById("time").innerText = timeLeft;
+} else {
+roundResult();
+}
+}, 1000);
+
+updateBalance();
+</script>
+</body>
+</html>
